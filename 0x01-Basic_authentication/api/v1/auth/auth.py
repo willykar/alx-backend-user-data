@@ -8,6 +8,12 @@ from flaskk import Flask, request
 class Auth():
     """"Class Authorization"""
 
+    def require_auth(self, path: str, excluded_paths:
+                     List[str]) -> bool:
+        """ Determines if authentication is requied for
+        given path"""
+        return False
+
     def authorization_header(self, request=None) -> str:
         """Checks if Authorization request header
         is present and contain values"""
