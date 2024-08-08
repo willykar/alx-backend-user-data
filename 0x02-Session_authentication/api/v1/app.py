@@ -28,26 +28,15 @@ elif auth_type == 'auth':
 
 @app.before_request
 def before_request():
-    """Filter each request before routing it to the corresponding view"""
-    if auth is None:
-        return
+    """handler before_request"""
+    excluded_paths = ['/api/v1/status/',
+                      '/api/v1/unauthorized', '/api/v1/forbidden']
 
-    # Paths that do not require authentication
-    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
-                      '/api/v1/forbidden/']
-
-    # Check if the request path requires authentication
-    if not auth.require_auth(request.path, excluded_paths):
-        return
-
-    # If the Authorization header is missing, raise a 401 Unauthorized error
-    if auth.authorization_header(request) is None:
-        abort(401)
-
-    # If the user cannot be authenticated, raise a 403 Forbidden error
-    request.current_user = auth.current_user(request)
-    if request.current_user is None:
-        abort(403)
+    if auth and auth.require_auth(request.path, excluded_paths):
+        if auth.authorization_header(request) is None:
+            abort(401)
+        if auth.current_user(request) is None:
+            abort(403)
 
 
 @app.errorhandler(404)
