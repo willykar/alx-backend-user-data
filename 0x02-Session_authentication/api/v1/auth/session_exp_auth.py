@@ -1,68 +1,51 @@
 #!/usr/bin/env python3
-""" Module of Expiration of Session Authentication """
-
-from api.v1.auth.session_auth import SessionAuth
+"""
+Add an expiration date to a Session ID
+"""
 from datetime import datetime, timedelta
-from models.user import User
+from api.v1.auth.session_auth import SessionAuth
 from os import getenv
 
 
 class SessionExpAuth(SessionAuth):
-    """Session Expiration Class"""
+    """
+    Session Authentication with expiration
+    """
 
     def __init__(self):
-        """Constructor Method"""
-        SESSION_DURATION = getenv('SESSION_DURATION')
-
-        try:
-            session_duration = int(SESSION_DURATION)
-        except Exception:
-            session_duration = 0
-
-        self.session_duration = session_duration
+        """
+        Initializes class
+        """
+        super().__init__()
+        self.session_duration = int(getenv('SESSION_DURATION')) if \
+            getenv('SESSION_DURATION') else 0
 
     def create_session(self, user_id=None):
-        """Creation session with expiration"""
-
+        """
+        Create a Seesion ID with expiration
+        """
         session_id = super().create_session(user_id)
-
-        if session_id is None:
+        if not session_id:
             return None
-
-        session_dictionary = {
-            "user_id": user_id,
-            "created_at": datetime.now()
-        }
-
-        self.user_id_by_session_id[session_id] = session_dictionary
-
+        session_dict = {"user_id": user_id, "created_at": datetime.now()}
+        self.user_id_by_session_id[session_id] = session_dict
         return session_id
 
     def user_id_for_session_id(self, session_id=None):
-        """gets user_id from session_id"""
-
+        """
+        Get the user ID for a given Session ID with expiration
+        """
         if session_id is None:
             return None
-
-        if session_id not in self.user_id_by_session_id.keys():
+        if session_id not in self.user_id_by_session_id:
             return None
-
-        session_dictionary = self.user_id_by_session_id.get(session_id)
-
-        if session_dictionary is None:
-            return None
-
+        session_dict = self.user_id_by_session_id[session_id]
         if self.session_duration <= 0:
-            return session_dictionary.get('user_id')
-
-        created_at = session_dictionary.get('created_at')
-
-        if created_at is None:
+            return session_dict['user_id']
+        if 'created_at' not in session_dict:
             return None
-
-        expired_time = created_at + timedelta(seconds=self.session_duration)
-
-        if expired_time < datetime.now():
+        expiration_date = session_dict['created_at'] + \
+            timedelta(seconds=self.session_duration)
+        if expiration_date < datetime.now():
             return None
-
-        return session_dictionary.get('user_id')
+        return session_dict['user_id']
