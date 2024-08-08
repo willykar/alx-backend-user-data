@@ -27,9 +27,10 @@ def before_request():
     """Filter each request before routing it to the corresponding view"""
     if auth is None:
         return
-        
+
     # Paths that do not require authentication
-    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
+    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/']
 
     # Check if the request path requires authentication
     if not auth.require_auth(request.path, excluded_paths):
@@ -43,15 +44,18 @@ def before_request():
     if auth.current_user(request) is None:
         abort(403)
 
+
 @app.errorhandler(404)
 def not_found(error) -> str:
     """ Not found handler """
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Unauthorized handler """
     return jsonify({"error": "Unauthorized"}), 401
+
 
 @app.errorhandler(403)
 def forbidden(error) -> str:
