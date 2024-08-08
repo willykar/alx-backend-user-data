@@ -45,8 +45,8 @@ def before_request():
 
     # If both the Authorization header and session cookie are missing,
     # raise a 401 Unauthorized error
-    if auth.authorization_header(request)
-    is None and auth.session_cookie(request) is None:
+    if auth.authorization_header(request) is None and
+       auth.session_cookie(request) is None:
         abort(401)
 
     # If the user cannot be authenticated, raise a 403 Forbidden error
