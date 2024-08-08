@@ -33,7 +33,8 @@ class BasicAuth(Auth):
         """
         Returns the decoded value of a Base64 string.
         """
-        if base64_authorization_header and isinstance(base64_authorization_header, str):
+        if base64_authorization_header
+        and isinstance(base64_authorization_header, str):
             try:
                 encoded = base64_authorization_header.encode('utf-8')
                 decoded = base64.b64decode(encoded)
@@ -42,14 +43,18 @@ class BasicAuth(Auth):
                 return None
         return None
 
-    def extract_user_credentials(
-            self, decoded_base64_authorization_header: str) -> Tuple[Optional[str], Optional[str]]:
+    def extract_user_credentials(self,
+                                 decoded_base64_authorization
+                                 _header: str) -> Tuple[Optional[str],
+                                                        Optional[str]]:
         """
         Returns the user email and password from the Base64 decoded value.
         """
-        if decoded_base64_authorization_header and isinstance(decoded_base64_authorization_header, str):
+        if decoded_base64_authorization_header
+        and isinstance(decoded_base64_authorization_header, str):
             if ":" in decoded_base64_authorization_header:
-                email, password = decoded_base64_authorization_header.split(":", 1)
+                email, password = decoded_base64_authorization_header
+                .split(":", 1)
                 return email, password
         return None, None
 
@@ -61,7 +66,8 @@ class BasicAuth(Auth):
             return None
         return request.headers.get('Authorization', None)
 
-    def user_object_from_credentials(self, email: Optional[str], password: Optional[str]) -> Optional[TypeVar('User')]:
+    def user_object_from_credentials(self, email: Optional[str],
+                                     password: Optional[str]) -> Optional[TypeVar('User')]:
         """
         Retrieves the User instance based on email and password.
         """
