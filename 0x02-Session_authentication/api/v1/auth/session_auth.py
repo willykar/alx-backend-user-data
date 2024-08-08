@@ -30,7 +30,7 @@ class SessionAuth(Auth):
         # Generate a unique Session ID using uuid4
         session_id = str(uuid.uuid4())
 
-        # Store the session_id and associated user_id in the 
+        # Store the session_id and associated user_id in the
         # class attribute dictionary
         self.user_id_by_session_id[session_id] = user_id
 
