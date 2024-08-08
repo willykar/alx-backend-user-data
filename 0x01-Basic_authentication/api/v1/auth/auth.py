@@ -4,6 +4,7 @@
 from flask import Flask, request
 from typing import List, TypeVar
 
+
 class Auth:
     """Class Authorization"""
 
