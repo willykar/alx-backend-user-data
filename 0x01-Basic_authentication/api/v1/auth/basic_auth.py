@@ -66,8 +66,8 @@ class BasicAuth(Auth):
             return None
         return request.headers.get('Authorization', None)
 
-    def user_object_from_credentials(self, email: Optional[str],
-                                     password: Optional[str]) -> Optional[TypeVar('User')]:
+    def user_object_from_credentials(self, email: Optional[str], password:
+                                     Optional[str]) -> Optional[TypeVar('User')]:
         """
         Retrieves the User instance based on email and password.
         """
