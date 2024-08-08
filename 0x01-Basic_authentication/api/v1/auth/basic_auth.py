@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Basic_Auth module
+Basic Auth module
 """
 
 from api.v1.auth.auth import Auth
