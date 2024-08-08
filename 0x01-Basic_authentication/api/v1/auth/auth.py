@@ -24,7 +24,8 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        """Checks if Authorization request header is present and contains values"""
+        """Checks if Authorization request header is present
+        and contains values"""
         if request is None or "Authorization" not in request.headers:
             return None
         else:
