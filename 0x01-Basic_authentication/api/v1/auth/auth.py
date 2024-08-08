@@ -10,7 +10,7 @@ class Auth:
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """ Determines if authentication is required for the given path """
-        
+
         if path is None:
             return True
         if not excluded_paths or not isinstance(excluded_paths, list):
@@ -30,7 +30,7 @@ class Auth:
                     normalized_excluded_path = excluded_path.rstrip('/') + '/'
                     if normalized_path == normalized_excluded_path:
                         return False
-                        
+
         return True
 
     def authorization_header(self, request=None) -> str:
