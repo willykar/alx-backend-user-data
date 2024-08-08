@@ -17,12 +17,10 @@ class SessionAuth(Auth):
 
     def create_session(self, user_id: str = None) -> str:
         """
-        Creates a Session ID for a user_id.
-        
+        Creates a Session ID for a user_id
         Args:
             user_id (str): The ID of the user for whom the
             session is being created.
-        
         Returns:
             str: The generated Session ID, or None if user_id is invalid.
         """
