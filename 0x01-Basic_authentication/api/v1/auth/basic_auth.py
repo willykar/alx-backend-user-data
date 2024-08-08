@@ -34,23 +34,24 @@ class BasicAuth(Auth):
         # Extract the Base64 part by removing the "Basic " prefix
         return authorization_header[len("Basic "):]
 
+
 def decode_base64_authorization_header(self,
-                                           base64_authorization_header: str
-                                           ) -> str:
-        """ Decodes the value of a base64 string """
-        if base64_authorization_header is None:
-            return None
-        if not isinstance(base64_authorization_header, str):
-            return None
+                                       base64_authorization_header:
+                                       str) -> str:
+    """ Decodes the value of a base64 string """
+    if base64_authorization_header is None:
+        return None
+    if not isinstance(base64_authorization_header, str):
+        return None
 
-        try:
-            encoded = base64_authorization_header.encode('utf-8')
-            decoded64 = b64decode(encoded)
-            decoded = decoded64.decode('utf-8')
-        except BaseException:
-            return None
+    try:
+        encoded = base64_authorization_header.encode('utf-8')
+        decoded64 = b64decode(encoded)
+        decoded = decoded64.decode('utf-8')
+    except BaseException:
+        return None
 
-        return decoded
+    return decoded
 
     def extract_user_credentials(self,
                                  decoded_base64_authorization_header: str
