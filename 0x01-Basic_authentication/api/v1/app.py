@@ -15,18 +15,19 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 # Initialize the auth variable
 auth = None
 
-# Load the appropriate authentication class based on the environment variable AUTH_TYPE
+# Load the appropriate authentication class based on the environment variable
 auth_type = os.getenv('AUTH_TYPE', 'auth')
 if auth_type == 'auth':
     from api.v1.auth.auth import Auth
     auth = Auth()
+
 
 @app.before_request
 def before_request():
     """Filter each request before routing it to the corresponding view"""
     if auth is None:
         return
-    
+        
     # Paths that do not require authentication
     excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
 
@@ -56,6 +57,7 @@ def unauthorized(error) -> str:
 def forbidden(error) -> str:
     """ Forbidden handler """
     return jsonify({"error": "Forbidden"}), 403
+
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
