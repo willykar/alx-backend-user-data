@@ -28,6 +28,7 @@ elif auth_type == 'auth':
     from api.v1.auth.auth import Auth
     auth = Auth()
 
+
 @app.before_request
 def before_request():
     """Filter each request before routing it to the corresponding view"""
@@ -42,8 +43,10 @@ def before_request():
     if not auth.require_auth(request.path, excluded_paths):
         return
 
-    # If both the Authorization header and session cookie are missing, raise a 401 Unauthorized error
-    if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
+    # If both the Authorization header and session cookie are missing,
+    # raise a 401 Unauthorized error
+    if auth.authorization_header(request)
+    is None and auth.session_cookie(request) is None:
         abort(401)
 
     # If the user cannot be authenticated, raise a 403 Forbidden error
