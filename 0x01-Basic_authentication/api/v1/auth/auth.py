@@ -13,7 +13,18 @@ class Auth():
                      List[str]) -> bool:
         """ Determines if authentication is requied for
         given path"""
-        return False
+        if path is None:
+            return True
+        if excluded_paths is None or not excluded_paths:
+            return true
+
+        normalized_path = path.rstrip('/') + '/'
+
+        for excluded_path in excluded_paths:
+            normalized_excluded_path = excluded_path.rstrip('/') + '/'
+            if normalized_path.startswith(normalized_excluded_path):
+                return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """Checks if Authorization request header
