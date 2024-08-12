@@ -9,10 +9,11 @@ import bcrypt
 
 
 def _hash_password(password: str) -> bytes:
-        """
-        Hash a password using bcrypt
-        """
-        return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    """
+    Hash a password using bcrypt
+    """
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
 
 class Auth:
     """
@@ -32,3 +33,13 @@ class Auth:
         except NoResultFound:
             hashed_password = _hash_password(password)
             return self._db.add_user(email, hashed_password)
+
+    def valid_login(self, email: str, password: str) -> bool:
+        """
+        Validate user login credentials
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+            return bcrypt.checkpw(password.encode(), user.hashed_password)
+        except NoResultFound:
+            return False
