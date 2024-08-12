@@ -107,16 +107,6 @@ This project is a basic implementation of a user authentication system using Fla
 
 To test the endpoints, you can use tools like `curl` or Postman to send HTTP requests. The provided `main.py` scripts demonstrate how to interact with the API.
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
-- [bcrypt Documentation](https://pypi.org/project/bcrypt/)
-
-Feel free to contribute or modify the project as needed for your learning purposes.
 
 
