@@ -53,3 +53,20 @@ class DB:
             raise NoResultFound("No found")
         except InvalidRequestError:
             raise InvalidRequestError("Invalid")
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """
+        update user attributes then commit changes to the database
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
+            raise NoResultFound("user not found")
+        for key, value in kwargs.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+            else:
+                raise ValueError(f"Invalid attribute: {key}")
+
+        self._session.commit()
+
