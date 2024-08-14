@@ -101,11 +101,11 @@ def update_password():
         abort(400, description="Missing required fields")
     try:
         AUTH.update_password(reset_token, new_password)
-        return jsonify({"email": email, "message": "Password updated"}), 200
     except NoResultFound:
         abort(403)
     except Exception:
         abort(500, description="An unexpected error occurred")
+     return jsonify({"email": email, "message": "Password updated"}), 200
 
 
 if __name__ == "__main__":
