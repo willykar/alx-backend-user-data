@@ -10,7 +10,7 @@ app = Flask(__name__)
 AUTH = Auth()
 
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET"], )
 def index() -> str:
     """
     default route
@@ -61,7 +61,7 @@ def logout():
     abort(403)
 
 
-@app.route("/profile", methods=["GET"])
+@app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile():
     """
     Get profile of a user
