@@ -1,159 +1,128 @@
 #!/usr/bin/env python3
-"""
-Main file
-"""
-from user import User
+""" End-to-end integration test"""
 
 import requests
 
-BASE_URL = "http://localhost:5000"
-
-
-def register_user(email: str, password: str) -> None:
-    """
-    Register a new user with the provided
-    email and password.
-
-    Args:
-        email (str): The email address of the user to register.
-        password (str): The password for the user.
-
-    Raises:
-        AssertionError: If the response status code
-        is not 201 Created.
-    """
-    response = requests.post(f"{BASE_URL}/users",
-                              json={"email": email, "password": password})
-    if response.status_code == 200:
-        assert(response.json() == {"email": email,
-                                   "passowrd": password})
-    else:
-        assert(response.status_code == 400)
-        assert(response.json() == {"message": "email already registered"})
-
-
-def log_in_wrong_password(email: str, password: str) -> None:
-    """
-    Attempt to log in with the provided email
-    and wrong password.
-
-    Args:
-        email (str): The email address of the user.
-        password (str): The incorrect password to test.
-
-    Raises:
-        AssertionError: If the response status code
-        is not 401 Unauthorized.
-    """
-    response = requests.post(f"{BASE_URL}/sessions",
-                             json={"email": email,
-                                   "password": password})
-    assert response_status_code == 401
-
-
-def log_in(email: str, password: str) -> str:
-    """
-    Log in with the provided email and password.
-
-    Args:
-        email (str): The email address of the user.
-        password (str): The correct password for the user.
-
-    Returns:
-        str: The session ID returned by the server.
-
-    Raises:
-        AssertionError: If the response status code is not 200 OK.
-    """
-    response = requests.post(f"{BASE_URL}/login",
-                             json={"email": email, "password": password})
-    assert response.status_code == 200
-    assert response.json() == {"email": email, "message": "logged in"}
-
-
-def profile_unlogged() -> None:
-    """
-    Attempt to access the profile without logging in.
-
-    Raises:
-        AssertionError: If the response status code
-        is not 403 Forbidden.
-    """
-    response = requests.get(f"{BASE_URL}/profile")
-    assert response.status_code == 403,
-    f"Profile access should be forbidden: {response.text}"
-
-
-def profile_logged(session_id: str) -> None:
-    """
-    Access the profile with a valid session ID.
-
-    Args:
-        session_id (str): The session ID used for authentication.
-
-    Raises:
-        AssertionError: If the response status code is not 200 OK.
-    """
-    response = requests.get(f"{BASE_URL}/profile",
-                            headers={"Authorization": f"Bearer {session_id}"})
-    assert response.status_code == 200,
-    f"Failed to access profile: {response.text}"
-
-def log_out(session_id: str) -> None:
-    """
-    Log out the user with the provided session ID.
-
-    Args:
-        session_id (str): The session ID used for authentication.
-
-    Raises:
-        AssertionError: If the response status code is not 200 OK.
-    """
-    response = requests.post(f"{BASE_URL}/logout", headers={"Authorization": f"Bearer {session_id}"})
-    assert response.status_code == 200, f"Failed to log out: {response.text}"
-
-def reset_password_token(email: str) -> str:
-    """
-    Request a password reset token for the provided email.
-
-    Args:
-        email (str): The email address for which to request a reset token.
-
-    Returns:
-        str: The password reset token returned by the server.
-
-    Raises:
-        AssertionError: If the response status code is not 200 OK.
-    """
-    response = requests.post(f"{BASE_URL}/reset_password", json={"email": email})
-    assert response.status_code == 200, f"Failed to request reset token: {response.text}"
-    return response.json().get("reset_token")
-
-def update_password(email: str, reset_token: str, new_password: str) -> None:
-    """
-    Update the password for the user using a reset token.
-
-    Args:
-        email (str): The email address of the user.
-        reset_token (str): The password reset token.
-        new_password (str): The new password to set.
-
-    Raises:
-        AssertionError: If the response status code is not 200 OK.
-    """
-    response = requests.post(f"{BASE_URL}/update_password", json={
-        "email": email,
-        "reset_token": reset_token,
-        "new_password": new_password
-    })
-    assert response.status_code == 200, f"Failed to update password: {response.text}"
-
-# Example constants
+BASE_URL = 'http://localhost:5000'
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
 
+
+def register_user(email: str, password: str) -> None:
+    """ Test for validating user registration """
+    data = {
+        "email": email,
+        "password": password
+    }
+    response = requests.post(f'{BASE_URL}/users', data=data)
+
+    msg = {"email": email, "message": "user created"}
+
+    assert response.status_code == 200
+    assert response.json() == msg
+
+
+def log_in_wrong_password(email: str, password: str) -> None:
+    """ Test for validating log in with wrong password """
+    data = {
+        "email": email,
+        "password": password
+    }
+    response = requests.post(f'{BASE_URL}/sessions', data=data)
+
+    assert response.status_code == 401
+
+
+def log_in(email: str, password: str) -> str:
+    """ Test for validating succesful log in """
+    data = {
+        "email": email,
+        "password": password
+    }
+    response = requests.post(f'{BASE_URL}/sessions', data=data)
+
+    msg = {"email": email, "message": "logged in"}
+
+    assert response.status_code == 200
+    assert response.json() == msg
+
+    session_id = response.cookies.get("session_id")
+
+    return session_id
+
+
+def profile_unlogged() -> None:
+    """ Test for validating profile request without log in """
+    cookies = {
+        "session_id": ""
+    }
+    response = requests.get(f'{BASE_URL}/profile', cookies=cookies)
+
+    assert response.status_code == 403
+
+
+def profile_logged(session_id: str) -> None:
+    """ Test for validating profile request logged in """
+    cookies = {
+        "session_id": session_id
+    }
+    response = requests.get(f'{BASE_URL}/profile', cookies=cookies)
+
+    msg = {"email": EMAIL}
+
+    assert response.status_code == 200
+    assert response.json() == msg
+
+
+def log_out(session_id: str) -> None:
+    """ Test for validating log out endpoint """
+    cookies = {
+        "session_id": session_id
+    }
+    response = requests.delete(f'{BASE_URL}/sessions', cookies=cookies)
+
+    msg = {"message": "Bienvenue"}
+
+    assert response.status_code == 200
+    assert response.json() == msg
+
+
+def reset_password_token(email: str) -> str:
+    """ Test for validating password reset token """
+    data = {
+        "email": email
+    }
+    response = requests.post(f'{BASE_URL}/reset_password', data=data)
+
+    assert response.status_code == 200
+
+    reset_token = response.json().get("reset_token")
+
+    msg = {"email": email, "reset_token": reset_token}
+
+    assert response.json() == msg
+
+    return reset_token
+
+
+def update_password(email: str, reset_token: str, new_password: str) -> None:
+    """ Test for validating password reset (update) """
+    data = {
+        "email": email,
+        "reset_token": reset_token,
+        "new_password": new_password
+    }
+    response = requests.put(f'{BASE_URL}/reset_password', data=data)
+
+    msg = {"email": email, "message": "Password updated"}
+
+    assert response.status_code == 200
+    assert response.json() == msg
+
+
 if __name__ == "__main__":
+
     register_user(EMAIL, PASSWD)
     log_in_wrong_password(EMAIL, NEW_PASSWD)
     profile_unlogged()
