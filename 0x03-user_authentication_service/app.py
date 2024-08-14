@@ -97,11 +97,15 @@ def update_password():
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
+    if not email or not reset_token or not new_password:
+        abort(400, description="Missing required fields")
     try:
         AUTH.update_password(reset_token, new_password)
-    except Exception:
+        return jsonify({"email": email, "message": "Password updated"}), 200
+    except NoResultFound:
         abort(403)
-    return jsonify({"email": email, "message": "Password updated"}), 200
+    except Exception:
+        abort(500, description="An unexpected error occurred")
 
 
 if __name__ == "__main__":
