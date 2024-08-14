@@ -5,6 +5,7 @@ Authentication module
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 from typing import Union
 import bcrypt
 import uuid
@@ -79,7 +80,13 @@ class Auth:
         """
         Destroy a user's session
         """
-        self.db.update_user(user_id, session_id=None)
+        try:
+            user = self._db.find_user_by(id=user_id)
+            self._db.update_user(user_id, session_id=None)
+        except NoResultFound:
+            raise NoResultFound("user not found with the given ID")
+        except InvalidRequestError:
+            raise InvalidRequestError("Error occured while updating")
 
     def get_reset_password_token(self, email: str) -> str:
         """
