@@ -69,4 +69,3 @@ class DB:
                 raise ValueError(f"Invalid attribute: {key}")
 
         self._session.commit()
-
