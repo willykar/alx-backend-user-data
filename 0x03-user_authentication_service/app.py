@@ -51,16 +51,14 @@ def logout():
     logout a user
     """
     session_id = request.cookies.get("session_id")
-    if not session_id:
-        return jsonify({"error": "Session ID missing"}), 400
-    try:
+    if session_id:
         user = AUTH.get_user_from_session_id(session_id)
-        AUTH.destroy_session(user.id)
-        return redirect('/')
-    except NoResultFound:
-        return jsonify({"error": "Forbidden"})
-    except InvalidRequestError:
-        return jsonify({"error", "internal server error"}), 500
+        if user:
+            AUTH.destroy_session(user.id)
+            return redirect("/")
+        else:
+            abort(403)
+    abort(403)
 
 
 @app.route("/profile", methods=["GET"])
